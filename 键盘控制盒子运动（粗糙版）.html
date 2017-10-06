@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html onselectstart='return false'>
+<head>
+	<meta charset="UTF-8">
+	<meta name="Author" content="FengYu">
+	<title>js练习</title>
+	<style>
+		*{margin:0;padding:0;font-family: Microsoft YaHei,serif;}
+		li{list-style: none;}
+		.box{
+            position: absolute;
+            width:20px;
+            height: 20px;
+            background: pink;
+        }
+	</style>
+</head>
+<body>
+    
+<script>
+    /**
+    **实现：由键盘来控制盒子的移动（四个盒子排一排）
+    *思路：将最后一个盒子删除，移动到第一个
+    *
+    *
+    *
+    **/
+
+
+	(function () {
+        //自动生成四个div小盒子
+        for(var i=0;i<4;i++){
+            var Div = document.createElement("div");
+            Div.className = "box";
+            Div.innerHTML = i+1;
+            Div.style.left = i*20 + "px";
+            document.body.appendChild(Div);
+        }
+        //需要一个键盘事件
+        document.onkeydown=function (e) {
+            var aBox = document.getElementsByTagName("div");
+            e= e || window.event;
+
+            switch (e.keyCode){
+                case 37:
+                    //左
+                    aBox[0].style.top = aBox[aBox.length-1].offsetTop + "px";
+                    aBox[0].style.left = aBox[aBox.length-1].offsetLeft -20+ "px";
+                    break;
+                case 38:
+                    //上
+                    aBox[0].style.top = aBox[aBox.length-1].offsetTop -20+ "px";
+                    aBox[0].style.left = aBox[aBox.length-1].offsetLeft + "px";
+                    break;
+                case 39:
+                    //右
+                    aBox[0].style.top = aBox[aBox.length-1].offsetTop+ "px";
+                    aBox[0].style.left = aBox[aBox.length-1].offsetLeft +20+ "px";
+                    break;
+                case 40:
+                    //下
+                    aBox[0].style.top = aBox[aBox.length-1].offsetTop+20+ "px";
+                    aBox[0].style.left = aBox[aBox.length-1].offsetLeft+ "px";
+                    break;
+            }
+            document.body.appendChild(aBox[0]);
+        }
+    })()
+
+</script>
+</body>
+</html>

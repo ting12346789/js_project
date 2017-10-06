@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" onselectstart="return false">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box{
+            position: relative;
+            width: 800px;
+            height: 500px;
+            margin:auto;
+            background: yellowgreen;
+            overflow: hidden;
+        }
+        
+        #scoll{
+            position: absolute;
+            right: 0;
+            top:0;
+            background: linear-gradient(#82d8e2,#e166e3);
+            width: 20px;
+            height: 100%;
+            border-radius: 10px;
+        }
+        #sbox{
+            position: absolute;
+            right: 0;
+            top:0;
+            width: 20px;
+            height: 60px;
+            background: #3c3c3c;
+            border-radius: 10px;
+        }
+        #con{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 750px;
+            height: auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+            <div id="con">
+                    <h2>阿甘正传</h2><br/>
+                    <p class="pbold">1、Life was like a box of chocolates, you never know what you're going to get.</p>
+                    <p>生命就像一盒巧克力，结果往往出人意料。</p>
+                    <p class="pbold">2、Stupid is as stupid does.</p>
+                    <p>蠢人做蠢事，也可理解为傻人有傻福。</p>
+                    <p class="pbold">3、Miracles happen every day.</p>
+                    <p>奇迹每天都在发生。</p>
+                    <p class="pbold">4、it made me look like a duck in water.</p>
+                    <p>它让我如鱼得水。</p>
+                    <p>我不懂我们是否有着各自的命运，还是只是到处随风飘荡。</p>
+                    <p class="pbold">6、Death is just a part of life, something we're all destined to do.</p>
+                    <p>死亡是生命的一部分，是我们注定要做的一件事。</p>
+                    <p class="pbold">7、You have got to put the past behind you before you can move on.</p>
+                    <p>放下包袱，继续前进。</p>
+                    <p class="pbold">8、It was like just before the sun goes to bed down on the bayou. There was a million sparkles on the river.</p>
+                    <p>就像太阳在落山前映射在河口上，有无数的亮点在闪闪发光。</p>
+                    <p class="pbold">9、If there is anything you need, I will not be far away.</p>
+                    <p>只要你需要，我就在这里。</p>
+                    <p class="pbold">10、I am a man of my word.</p>
+                    <p>我是信守承诺的人。</p>
+                    <p class="pbold">11、There is one small step for a man,a giant leap for mankind.</p>
+                    <p>某人的一小步就是人类的一大步。</p>
+            </div>
+        <div id="scoll">
+            <div id="sbox"></div>
+        </div>
+    </div>
+    
+
+    <script>
+        window.requestAnimationFrame = window.requestAnimationFrame||function (fn) {return setTimeout(fn,1000/60)};
+        var omove = document.getElementById('sbox'),
+            ocon = document.getElementById('con'),
+            a=0,b=0,
+            sh = scoll.offsetHeight,
+            bh = sbox.offsetHeight,
+            h_ = sh-bh;
+        mousewheel(document,function (e,d) {
+            e = e || window.event;
+            a = sbox.offsetTop;
+            d>0?a+=3:a-=3;
+            //在赋值之前，限定滑块的最大值与最小值
+            a = Math.min(h_,a);
+            a = Math.max(0,a);
+            omove.style.top = a+'px';
+            ocon.style.top = -a+'px';
+            return false;//清除默认事件
+        });
+        
+        function mousewheel(obj,fn) {
+            function eFn(e) {
+                e = e || window.event;
+                if(fn.call(this,e,-e.wheelDelta/120||e.detail/3)===false)!-[1,]?e.returnValue=false:e.preventDefault();
+            }
+            var eName = document.onmousewheel===null?"mousewheel":"DOMMouseScroll";
+            document.addEventListener?obj.addEventListener(eName,eFn):obj.attachEvent("on"+eName,eFn)
+        }
+
+        
+        sbox.onmousedown = function(e){
+            e = e || window.event;
+            var sY = e.clientY,
+                sT = this.offsetTop;
+            document.onmousemove = function(e){
+                e = e || window.event;
+                var top = e.clientY - sY + sT;
+                top = Math.min(h_,top);
+                top = Math.max(0,top);
+                
+                omove.style.top = top +'px';
+                ocon.style.top = -top +'px';
+            }
+        }
+
+        document.onmouseup = function(){
+            this.onmousemove = null;
+        }
+    
+
+    
+    </script>
+</body>
+</html>
