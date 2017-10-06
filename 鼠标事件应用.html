@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            width: 200px;
+            height:35px;
+            margin: 30px auto;
+            background-color: pink;
+            line-height: 35px;
+            text-align: center;
+            color: #fff;
+        }
+        #box1{color:orangered;}
+    </style>
+</head>
+<body>
+    <div id="box1"></div>
+    <div id="box2"></div>
+
+    <script>
+        var $box1 = document.getElementById('box1');
+        var $box2 = document.getElementById('box2');
+        $box1.onmouseenter = function(){
+            this.innerHTML = '我被移入了';
+            $box2.innerHTML = '#box1被移入了'
+        }
+        $box2.onmouseenter = function(){
+            this.innerHTML = '我被移入了';
+            $box1.innerHTML = '#box2被移入了'
+        }
+        $box1.onclick = function(){
+            this.innerHTML = '我被点击了';
+            $box2.innerHTML = '#box1被点击了';
+            this.onmouseenter = null;
+        }
+        $box2.onclick = function(){
+            this.innerHTML = '我被点击了';
+            $box1.innerHTML = '#box2被点击了';
+            this.onmouseenter = null;
+        }
+        
+    </script>
+</body>
+</html>

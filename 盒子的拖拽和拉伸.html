@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #box{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background: pink;
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+    <div id="box"></div>
+
+    <script>
+        /**
+        *实现：盒子可以拖动，并且当鼠标移入盒子右下角时，可以改变盒子的大小。
+        *思路：1.画一个盒子box，当鼠标进入盒子时，判断鼠标所在的位置。
+        *     2.如果鼠标不再右下角的位置，就只能拖拽。
+        *     3.如果鼠标在盒子右下角，则可以改变盒子大小。
+        *
+        **/
+
+
+
+         var box = document.getElementById('box');
+
+         document.onmouseup = function(){
+            this.onmousemove = null;
+         }
+        
+        box.onmousemove = function(e){
+            var startLeft = this.offsetLeft,
+                startTop = this.offsetTop,
+                startWidth = this.offsetWidth,
+                startHeight = this.offsetHeight;
+
+            if(e.clientX <= startWidth+startLeft && e.clientX > startWidth+startLeft-5 && e.clientY <= startHeight+startTop && e.clientY > startHeight+startTop-5){
+                this.style.cursor = 'se-resize';
+                box.onmousedown = function(e){
+                    e = e || window.event;
+                    var startX = e.clientX,
+                        startY = e.clientY;
+                    document.onmousemove = function(e){
+                        e = e || window.event;
+                        var moveX = e.clientX,
+                            moveY = e.clientY,
+                            x_ = moveX - startX,
+                            y_ = moveY - startY;
+                        box.style.width = startWidth + x_ + 'px';
+                        box.style.height = startHeight + y_ + 'px'; 
+                    }
+                } 
+            }else{
+                this.style.cursor = 'move';
+                box.onmousedown = function(e){
+                    e = e || window.event;
+                    var startX = e.clientX,
+                        startY = e.clientY;
+                        document.onmousemove = function(e){
+                            e = e || window.event;
+                            var moveX = e.clientX,
+                                moveY = e.clientY,
+                                x_ = moveX - startX,
+                                y_ = moveY - startY;
+                            box.style.left = startLeft + x_ + 'px';
+                            box.style.top = startTop + y_ + 'px'; 
+                        }
+                }
+            }
+        }
+
+
+    </script>
+</body>
+</html>
