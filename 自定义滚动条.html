@@ -76,55 +76,59 @@
     
 
     <script>
-        window.requestAnimationFrame = window.requestAnimationFrame||function (fn) {return setTimeout(fn,1000/60)};
         var omove = document.getElementById('sbox'),
             ocon = document.getElementById('con'),
-            a=0,b=0,
-            sh = scoll.offsetHeight,
-            bh = sbox.offsetHeight,
-            h_ = sh-bh;
-        mousewheel(document,function (e,d) {
-            e = e || window.event;
-            a = sbox.offsetTop;
-            d>0?a+=3:a-=3;
-            //在赋值之前，限定滑块的最大值与最小值
-            a = Math.min(h_,a);
-            a = Math.max(0,a);
-            omove.style.top = a+'px';
-            ocon.style.top = -a+'px';
-            return false;//清除默认事件
-        });
+            maxLTop = scoll.offsetHeight - sbox.offsetHeight,//滑块滚动最大高度
+            maxConTop = ocon.offsetHeight - box.clientHeight;//内容滚动的最大高度
         
-        function mousewheel(obj,fn) {
-            function eFn(e) {
-                e = e || window.event;
-                if(fn.call(this,e,-e.wheelDelta/120||e.detail/3)===false)!-[1,]?e.returnValue=false:e.preventDefault();
-            }
-            var eName = document.onmousewheel===null?"mousewheel":"DOMMouseScroll";
-            document.addEventListener?obj.addEventListener(eName,eFn):obj.attachEvent("on"+eName,eFn)
-        }
-
-        
+        //鼠标控制滑块
         sbox.onmousedown = function(e){
             e = e || window.event;
-            var sY = e.clientY,
-                sT = this.offsetTop;
+            var sY = e.clientY, //获取鼠标的初始Y坐标
+                sT = this.offsetTop;//获取按下时。滑块top值
             document.onmousemove = function(e){
                 e = e || window.event;
                 var top = e.clientY - sY + sT;
-                top = Math.min(h_,top);
-                top = Math.max(0,top);
-                
-                omove.style.top = top +'px';
-                ocon.style.top = -top +'px';
+                setT(top)
             }
         }
 
         document.onmouseup = function(){
             this.onmousemove = null;
         }
-    
 
+
+        //添加滚轮事件
+        mousewheel(document,function (e,d) {
+            e = e || window.event;
+            var top = sbox.offsetTop;
+            d>0?top+=30:top-=30; //滑块滚动速度
+            setT(top)
+            return false;//清除默认事件
+        });
+        
+        //封装滚轮事件
+        function mousewheel(obj,fn) {
+            function eFn(e) {
+                e = e || window.event;
+                //假事件函数执行，来判断是否需要阻止默认事件
+                if(fn.call(this,e,-e.wheelDelta/120||e.detail/3)===false)!-[1,]?e.returnValue=false:e.preventDefault();
+            }
+            var eName = document.onmousewheel===null?"mousewheel":"DOMMouseScroll";
+            //判断是否是火狐，如果是，则用火狐的方法添加，不是就直接添加
+            document.addEventListener?obj.addEventListener(eName,eFn):obj.attachEvent("on"+eName,eFn)
+        }
+
+        
+        //con的top的封装
+        function setT(top) {
+            //在赋值之前，限定滑块的最大值与最小值
+            top = Math.min(maxLTop,top);
+            top = Math.max(0,top);
+            omove.style.top = top + "px";
+            var conTop = maxConTop*top/maxLTop;
+            ocon.style.top =  -conTop + "px";
+        }
     
     </script>
 </body>
