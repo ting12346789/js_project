@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html onselectstart="return false">
+<head>
+    <meta charset="UTF-8">
+    <meta name="Author" content="FengYu">
+    <title>飞机大战v1</title>
+    <style>
+        *{margin:0;padding:0;font-family: Microsoft YaHei,serif;}
+	    li{list-style: none;}
+        body{
+            background: #000;
+        }
+        #wrap{
+            width: 300px;
+            height: 500px;
+            border:10px solid #fff;
+            margin:50px auto;
+        }
+        #box{
+            position: relative;
+            width:100%;
+            height:100%;
+        }
+        #box h1{
+            padding:30px;
+            text-align: center;
+            color: #fff;
+        }
+        #box .pattern{
+            width: 150px;
+            height: 30px;
+            font-size:14px;
+            text-align: center;
+            line-height:30px;
+            background: #fff;
+            margin:55px auto;
+            cursor:pointer;
+        }
+        #box .pattern.red{
+            font-size:16px;
+            font-weight: bold;
+            color:red;
+            background: skyblue;
+        }
+        #box .plane,#box .biu{
+            position: absolute;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="wrap">
+        <div id="box"></div>
+    </div>
+
+    <script>
+        /*
+        *
+        *       本次案例不考虑兼容问题
+        *
+        * */
+        (function () {
+            var box = document.getElementById("box");
+
+            init();
+            //初始化界面函数
+            function init() {
+                var H1 = document.createElement("h1");
+                    H1.innerHTML = "飞机大战v1.0";
+                box.appendChild(H1);
+                //var Div = document.createElement("div");
+
+                //把div的内容用数组存起来
+                var arrInit = ["简单","一般","困难","风的力量"];
+                //循环生成4个模式的盒子
+                for(var i=0;i<4;i++){
+                    var Div = document.createElement("div");
+                        Div.innerHTML = arrInit[i];
+                        Div.className = i===3?"pattern red":"pattern";
+                        Div.i = i;
+                        //每个模式的盒子都有一个点击事件
+                        Div.onclick=function (e) {
+                            //开始函数执行
+                            start(this.i,e);
+                        };
+                    box.appendChild(Div);
+
+                }
+            }
+            //开始函数
+            function start(index,e){
+                //清空box
+                box.innerHTML = "";
+                //生成我军和子弹的函数执行
+                myPlane(index,e);
+            }
+            //生成我军和子弹
+            function myPlane(index,e) {
+                //用new操作符生成一个img标签
+                var plane = new Image();
+                    plane.src = "img/plane.png";
+                    plane.width = 60;
+                    plane.height = 36;
+                    plane.className = "plane";
+                    plane.style.top = e.pageY - getoffset(box).top - plane.height/2 + "px";
+                    plane.style.left = e.pageX - getoffset(box).left - plane.width/2 + "px";
+                box.appendChild(plane);
+
+                //设置我军活动范围的最大和最小值，由于topmin是0  就不写了；
+                var leftMin,leftMax,topMin,topMax;
+                leftMin = -plane.width/2;
+                leftMax = box.offsetWidth-plane.width/2;
+                topMax = box.offsetHeight-plane.height;
+
+
+                //移动事件控制飞机移动
+                document.onmousemove=function (e) {
+                    var left = e.pageX -getoffset(box).left - plane.width/2,
+                        top = e.pageY -getoffset(box).top - plane.height/2;
+                        //限定我军的活动范围（边界）
+                        left = Math.min(leftMax,left);
+                        left = Math.max(leftMin,left);
+                        top = Math.min(topMax,top);
+                        top = Math.max(0,top);
+
+                        plane.style.left = left + "px";
+                        plane.style.top = top + "px";
+
+                }
+                //生成子弹
+                /*var Biu = new Image();
+                    Biu.src = "img/bullet.png";
+                    Biu.width = 6;
+                    Biu.height = 22;
+                    Biu.className = "biu";
+                    Biu.style.left = plane.offsetLeft +plane.width/2 - Biu.width/2+ "px";
+                    Biu.style.top = plane.offsetTop -Biu.height + "px";
+
+                box.appendChild(Biu)*/
+                //把不同模式的子弹的速度存起来
+                var biuSpeed = ["100","200","300","20"];
+                //用定时器来批量生成子弹（因为需要很多的子弹）
+                setInterval(function () {
+                    //用new操作符生成img标签，在对应的设置
+                    var Biu = new Image();
+                    Biu.src = "img/bullet.png";
+                    Biu.width = 6;
+                    Biu.height = 22;
+                    Biu.className = "biu";
+                    Biu.style.left = plane.offsetLeft +plane.width/2 - Biu.width/2+ "px";
+                    Biu.style.top = plane.offsetTop  + "px";
+                    box.appendChild(Biu);
+                    //用requestAnimationFrame来循环调用函数mq，来达到改变top，从而让子弹向上运动
+                    mq();
+                    function mq() {
+                        //每次执行就改变top 向上运动 12px
+                        Biu.style.top = Biu.offsetTop - 12 + "px";
+                        //判断子弹达到边界就删除子弹，避免页面有很多的子弹，切很多定时器，导致页面卡顿
+                        if(Biu.offsetTop<=-Biu.height/2){
+                            cancelAnimationFrame(Biu.timer);
+                            box.removeChild(Biu);
+                        }else{
+                            Biu.timer = requestAnimationFrame(mq);
+                        }
+                    }
+
+                },biuSpeed[index])
+            }
+
+
+            
+
+
+            //生成敌军
+
+
+
+
+            //获取对象到body的距离
+            function getoffset(obj) {
+                var json = {
+                    left:0,
+                    top:0
+                };
+                while(obj!==document.body){
+                    json.left += obj.offsetLeft;
+                    json.top += obj.offsetTop;
+                    obj = obj.offsetParent;
+                }
+                return json;
+            }
+
+        })()
+
+
+
+    </script>
+
+</body>
+</html>
